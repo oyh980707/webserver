@@ -5,6 +5,9 @@ import com.loveoyh.webserver.http.ex.EmptyRequestException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 该类的每一个实例用于表示一个客户端发送过来的HTTP请求内容
@@ -22,7 +25,7 @@ public class HttpRequest {
     private String protocol;
 
     /** 消息头的相关信息 */
-
+    private Map<String, String> headers = new HashMap<String, String>();
 
     /** 消息正文的相关内容 */
 
@@ -52,19 +55,15 @@ public class HttpRequest {
 
     /**
      * 解析请求行
+     * 1.通过输入流读取一行字符串（一个请求中的第一行内容就是请求行内容）
+     *  GET /index.html HTTP/1.1
+     * 2.按照空格将请求行拆分为三部分
+     * 3.将拆分后的内容分别设置到对应的属性：method url protocol
+     *  完成了解析请求操作
      */
     private void parseRequestLine(){
         System.out.println("开始解析请求行...");
-        /*
-         * 流程
-         * 1：通过输入流读取一行字符串（一个请求中的第一行
-         * 	内容就是请求行内容）
-         * 	GET /index.html HTTP/1.1
-         * 2：按照空格将请求行拆分为三部分
-         * 3：将拆分后的内容分别设置到对应的属性：
-         * 		method url protocol
-         * 		完成了解析请求操作
-         */
+
         String line = readLine();
         /*
          * 这里有可能会出现下标越界的情况:
@@ -79,15 +78,38 @@ public class HttpRequest {
         this.method = data[0];
         this.url = data[1];
         this.protocol = data[2];
+        //输出测试
+        System.out.println(this.method+" "+this.url+" "+this.protocol);
 
         System.out.println("解析请求行结束!");
     }
 
     /**
      * 解析消息头
+     * 1.循环调用readLine方法读取若干行，由于parseRequest方法已经从流中读取了请求中的第一行内容（请求行），
+     *  那么在这里使用readLine方法读取的就应当消息头部分了
+     * 2.将每个消息头读取后，按照": "拆分成两部分，第一部分应当是消息头的名字，第二部分
+     *  应当是消息头对应的值，将他们put到headers这个map中即可完成解析消息头工作
+     * 3.当调用readLine方法返回的是一个空字符串时，表示单独读取到了CRLF，那么直接break循环，
+     *  停止解析消息头部分即可
      */
     private void parseHeaders(){
         System.out.println("开始解析消息头...");
+
+        String line = null;
+        while(true){
+            line = readLine();
+            if("".equals(line)){
+                break;
+            }
+            String[] data = line.split(":\\s");
+            headers.put(data[0],data[1]);
+        }
+        //输出测试
+        Set<Map.Entry<String, String>> setEntry = headers.entrySet();
+        for (Map.Entry<String, String> item : setEntry) {
+            System.out.println(item.getKey()+": "+item.getValue());
+        }
 
         System.out.println("解析消息头结束!");
     }
