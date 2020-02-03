@@ -1,5 +1,8 @@
 package com.loveoyh.webserver.core;
 
+import com.loveoyh.webserver.http.HttpRequest;
+import com.loveoyh.webserver.http.ex.EmptyRequestException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -25,42 +28,20 @@ public class ClientHandler implements Runnable{
              * 2：处理请求
              * 3：响应客户端
              */
-            InputStream in = socket.getInputStream();
-            String line = readLine(in);
-            System.out.println("Line:"+line);
+            HttpRequest request = new HttpRequest(socket);
             System.out.println("处理客户端请求完毕!");
-        } catch (IOException e) {
+        }catch (EmptyRequestException e) {
+            System.err.println(e.getClass().getName());
+            System.err.println(e.getMessage());
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * 通过输入流读取一行字符串，以CRLF结尾为一行字符串。
-     * 返回的字符串中不含有最后的CRLF. CR(13) LF(10)
-     * @param in
-     * @return 读取一行的内容
-     */
-    private String readLine(InputStream in){
-        StringBuilder builder = new StringBuilder();
-        try {
-            /*
-             * c1表示上次读取到的字符
-             * c2表示本次读取到的字符
-             */
-            char c1='0',c2='0';
-            int d = -1;
-            while((d=in.read()) != -1){
-                c2 = (char)d;
-                if(c1==13 && c2==10){
-                    break;
-                }
-                builder.append(c2);
-                //下次读取前将当前赋值
-                c1 = c2;
+        } finally {
+            //响应完后断开连接
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return builder.toString().trim();
     }
 }

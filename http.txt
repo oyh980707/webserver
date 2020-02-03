@@ -1,0 +1,85 @@
+HTTP协议--超文本传输协议
+浏览器域服务器之间的应用层协议使用的就是HTTP协议，HTTP协议
+要求建立在可靠传输协议基础上进行。而通常传输层协议时用的是TCP协议
+
+HTTP协议规定了客户端与服务端传输的数据内容格式，以及通讯的方式
+HTTP协议要求客户端与服务端之间的通讯方式为：一次请求一次响应，即：客户端发送一个
+HTTP请求（request)给服务端，而服务端处理该请求后会给用户发送一个HTTP响应（response）
+在这个通讯的过程中不允许在服务端主动发送内容给客户端
+
+HTTP协议现在常用版本为：HTTP1.1
+HTTP1.0协议与1.1协议有一个比较大的改变
+1.0协议中：客户端与服务端建立TCP连接后会发送一个请求，当服务端处理并予以响应后就断开连接
+1.1协议中：客户端与服务端进TCP连接后可以进行多次的请求与相应操作后再断开连接（对于传输
+复杂数据时，这样做的速度快，资源占用小）
+HTTP协议可以参考万维网（w3c），有相关定义和解释
+
+
+HTTP协议要求与响应中的内容只能出现ISO8859-1字符集规定的字符（字母，数字，符号），
+不得直接出线中文这样的字符。
+
+HTTP请求
+请求是客户端发送给服务端的内容
+
+请求包含三部分信息
+请求行，消息头，消息正文
+
+1:请求行
+请求行是有一行字符串组成，用空格分隔为三部分。
+格式：
+Method Url Protocol(CRLF)
+请求方式 请求路径 协议版本
+如：
+GET /index.html HTTP/1.1
+
+注:CR是回车符，ASC编码对应为：13
+  LF是换行符，ASC编码对应为：10
+  HTTP协议中以CRLF结尾被规定为一行字符串结束
+      本身回车符，换行符都是空白字符，不可见。这里使用CR表示一个回车符
+   LF表示一个换行符。
+
+2:消息头
+消息头有若干行组成，是客户端发送给服务端的一些附加信息
+有的用来说明客户端信息（浏览器版本，所使用的操作系统等）
+有的用来说明与服务端交互数据的细节方式
+有的用来说明消息正文内容等等
+消息头的格式
+name:value(CRLF)
+消息头的名字；消息头对应的值（CRLF）
+
+最后一个消息头发送完毕后，要单独发送一个CRLF，表示消息头
+部分结束。
+
+Host: localhost:8088(CRLF)
+Connection: keep-alive(CRLF)
+Cache-Control: max-age=0(CRLF)
+Upgrade-Insecure-Requests: 1(CRLF)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36(CRLF)
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8(CRLF)
+Accept-Encoding: gzip, deflate, br(CRLF)
+Accept-Language: zh-CN,zh;q=0.9(CRLF)(CRLF)
+
+
+3:消息正文
+消息正文是纯二进制数据，是用户提交给服务端数据
+一个请求中不一定包含消息正文。
+
+
+一个请求的完整内容:
+GET /index.html HTTP/1.1
+Host: localhost:8088
+Connection: keep-alive
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.62 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh;q=0.9
+
+
+
+
+
+
+
+

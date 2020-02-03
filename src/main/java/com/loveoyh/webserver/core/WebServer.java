@@ -26,18 +26,20 @@ public class WebServer {
      * 服务端启动
      */
     public void start() {
-        try {
-            System.out.println("等待客户端连接...");
-            Socket socket = server.accept();
-            System.out.println("客户端连接成功!");
+//        while (true) {
+            try {
+                System.out.println("等待客户端连接...");
+                Socket socket = server.accept();
+                System.out.println("客户端连接成功!");
 
-            Thread t = new Thread(new ClientHandler(socket));
-            t.start();
+                Thread t = new Thread(new ClientHandler(socket));
+                t.start();
 
-            System.out.println("完毕!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                System.out.println("完毕!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+//        }
     }
 
     public static void main(String[] args) {
