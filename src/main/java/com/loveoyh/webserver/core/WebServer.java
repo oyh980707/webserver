@@ -26,7 +26,7 @@ public class WebServer {
      * 服务端启动
      */
     public void start() {
-//        while (true) {
+        while (true) {
             try {
                 System.out.println("等待客户端连接...");
                 Socket socket = server.accept();
@@ -39,7 +39,7 @@ public class WebServer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//        }
+        }
     }
 
     public static void main(String[] args) {

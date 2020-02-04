@@ -78,6 +78,54 @@ Accept-Language: zh-CN,zh;q=0.9
 
 
 
+HTTP响应（Response）
+响应式服务端回复客户端的内容。HTTP协议规定了相应的格式
+一个HTTP响应也包含三部分
+状态行，响应头，响应正文
+
+1：状态行
+状态行也是有一行字符串构成（CRLF）
+格式：
+protocol statusCode statusReason(CRLF)
+协议版本		状态码		状态描述(CRLF)
+
+状态代码是有一个三位数组成：包含5类
+1xx：保留，将来使用。
+2xx：成功 － 操作被接收、理解、接受（received, understood, accepted）。
+3xx：重定向（Redirection）－ 要完成请求必须进行进一步操作。
+4xx：客户端出错 － 请求有语法错误或无法实现。
+5xx：服务器端出错 － 服务器无法实现合法的请求
+
+常见的状态码与对应的描述：
+"200"   OK
+"201"   Created
+"202"   Accepted
+"204"   No Content
+"301"   Moved Permanently
+"302"   Moved Temporarily
+"304"   Not Modified
+"400"   Bad Request
+"401"   Unauthorized
+"403"   Forbidden
+"404"   Not Found
+"500"   Internal Server Error
+"501"   Not Implemented
+"502"   Bad Gateway
+"503"   Service Unavailable
+
+2：响应头
+响应头鱼请求中的消息头格式一致，是服务端发送给客户端的附加信息
+附加信息：
+比较常见的头：
+Content-type:用于说明响应正文的数据类型
+Content-Length:用于说明响应正文的数据长度（字节量）
+
+
+3：响应正文
+响应正文也是2进制数据，是服务端发送给客户端实际要响应的数据
+通常是客户端实际请求的资源数据，比如图片，页面等等
+一个响应中也不一定必须包含响应正文部分
+若要让浏览器能够正确理解正文内容，必须设置上述对应的响应头
 
 
 

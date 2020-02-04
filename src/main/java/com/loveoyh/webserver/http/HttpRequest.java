@@ -151,4 +151,21 @@ public class HttpRequest {
         }
         return builder.toString().trim();
     }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public String getHeaders(String key) {
+        return headers.get(key);
+    }
+
 }
