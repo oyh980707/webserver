@@ -23,6 +23,12 @@ public class HttpRequest {
     private String url;
     //请求使用的协议版本
     private String protocol;
+    //url中的请求部分
+    private String requestURI;
+    //url中的参数部分
+    private String queryString;
+    //保存具体的每个参数
+    private Map<String,String> parameters = new HashMap<String,String>();
 
     /** 消息头的相关信息 */
     private Map<String, String> headers = new HashMap<String, String>();
@@ -77,11 +83,53 @@ public class HttpRequest {
         }
         this.method = data[0];
         this.url = data[1];
+        //进一步解析url
+        parseUrl();
         this.protocol = data[2];
         //输出测试
         System.out.println(this.method+" "+this.url+" "+this.protocol);
 
         System.out.println("解析请求行结束!");
+    }
+
+    /**
+     * url可能存在两种情况
+     * 1：不带参数
+     * 2：带参数
+     *
+     * 如果不带参数，则直接将url赋值给requestURI即可，而queryString和parameter则无需操作。
+     * 如果带参数，则需要进一步解析url，该url是否含有参数部分，可以根据url中是否含有"?"判别
+     *
+     * 如果含有参数，则现根据“？”将url拆分成两个部分
+     * 第一部分是请求部分，赋值给requestURI
+     * 第二部分是参数部分，赋值给queryString
+     *
+     * 并且还要对参数进行进一步解析
+     * 将参数部分按照“&”进行拆分，可以得到每一个参数，再将每一个参数按照
+     * “=”拆分成两部分，并且分别作为key，value保存到parameters这个map保存
+     */
+    private void parseUrl(){
+        if(this.url.indexOf("?") != -1){
+            String[] data = this.url.split("\\?");
+            this.requestURI = data[0];
+            System.out.println("URI:"+this.requestURI);
+            if(data.length>1){
+                queryString = data[1];
+                //进一步按照"&"拆分参数
+                String[] paras = queryString.split("&");
+                for(String para : paras){
+                    //进一步按照"="拆分参数
+                    String[] arr = para.split("=");
+                    if(arr.length>1){
+                        parameters.put(arr[0],arr[1]);
+                    }else{
+                        parameters.put(arr[0],null);
+                    }
+                }
+            }
+        }else{
+            this.requestURI = this.url;
+        }
     }
 
     /**
@@ -168,4 +216,15 @@ public class HttpRequest {
         return headers.get(key);
     }
 
+    public String getRequestURI() {
+        return requestURI;
+    }
+
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public String getParameters(String key) {
+        return parameters.get(key);
+    }
 }

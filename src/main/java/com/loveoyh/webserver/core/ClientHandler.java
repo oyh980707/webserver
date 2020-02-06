@@ -3,6 +3,7 @@ package com.loveoyh.webserver.core;
 import com.loveoyh.webserver.http.HttpRequest;
 import com.loveoyh.webserver.http.HttpResponse;
 import com.loveoyh.webserver.http.ex.EmptyRequestException;
+import com.loveoyh.webserver.servlet.RegServlet;
 
 import java.io.*;
 import java.net.Socket;
@@ -33,17 +34,22 @@ public class ClientHandler implements Runnable{
             //2
             HttpResponse response = new HttpResponse(socket);
 
-            String url = request.getUrl();
-            //对应从web目录中找到该资源
-            File file = new File("web"+url);
+            String url = request.getRequestURI();
 
-            if(file.exists()){
-                response.setEntity(file);
+            if("/myweb/reg".equals(url)){
+                RegServlet reg = new RegServlet();
+                reg.service(request,response);
             }else{
-                file = new File("web/root/404.html");
+                //对应从web目录中找到该资源
+                File file = new File("web"+url);
+                if(file.exists()){
+                    response.setEntity(file);
+                }else{
+                    file = new File("web/root/404.html");
 
-                response.setStatusCode(404);
-                response.setEntity(file);
+                    response.setStatusCode(404);
+                    response.setEntity(file);
+                }
             }
 
             response.flush();

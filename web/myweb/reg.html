@@ -1,0 +1,52 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户注册</title>
+</head>
+<body>
+	<center>
+		<h1>用户注册</h1>
+		<!-- form表单
+			用户希望上传的数据必须要包含在foerm表单中
+			所以，我们让用户输入的这些输入框(<input>)都应当
+			包含在form标签中，凡是不在form当中的都不会提交到服务器
+			
+			form标签优良中重要的属性
+			method：指定提交的形式
+			action：指定该表单提交的路径
+			
+			提交表单有单独的提交按钮，该按钮的类型为submit
+			这样当点击该按钮后，表单就会提交到指定路径了
+			需要注意，表单中的输入框必须指定name属性，为每个输入框指定名字
+			否则内容也会忽略
+		 -->
+		<form action="reg" method="GET">
+			<table border="1">
+				<tr>
+					<td>用户名</td>
+					<td><input type="text" name="username" size="32"></td>
+				</tr>
+				<tr>
+					<td>密码</td>
+					<td><input type="password" name="password" size="32"></td>
+				</tr>
+				<tr>
+					<td>昵称</td>
+					<td><input type="text" name="nickname" size="32"></td>
+				</tr>
+				<tr>
+					<td>年龄</td>
+					<td><input type="text" name="age" size="32"></td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center">
+						<input type="submit" value="注册">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</center>
+</body>
+
+
+</html>
