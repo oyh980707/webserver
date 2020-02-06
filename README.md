@@ -89,3 +89,28 @@
     
     为通过解析config/web.xml文件中所有的<mime-mapping>标签来初始化
     这样我们可以支持所有介质类型
+
+9.  完成处理注册用户的业务操作，通过本版本，我们要了解浏览器是如何提交用户数据的,并且服务端是如何解析提交数据并如何进行业务处理的。
+    
+    1：准备注册页面
+    	在web/myweb中添加注册页面reg.html
+      
+    2:当页面的form表示以GET（地址栏形式）形式提交时，所有用户输入的信息会被拼在请求路径的后面，这是url中以？分割为两部分前面的请求部分，后面的参数部分
+    	如：http://localhost:8088/myweb/reg.html?username=name&password=123456&passwordtoo=123456&nickname=jeck&age=20
+     	我们在服务端解析请求中请求行的url部分会得到
+     	/myweb/reg.html?username=name&password=123456&passwordtoo=123456&nickname=jeck&age=20
+      	为此，url可能出现的两种状况为：带参数，不带参数
+      	带参数如：/myweb/reg.html?username=name&password=123456&passwordtoo=123456&nickname=jeck&age=20
+      	那么针对带参数的url，我们要将请求与参数部分进一步处理
+      
+      	在HttpRequest中定义相关属性
+      	1：String requestUrI，用于保存url中的请求部分
+      	2：String queryString，用于保存url中的参数部分
+      	3：Map parameters，用于保存每一个参数
+    
+    3： 在parseRequestLine解析请求行时，要对url进行更进一步解析
+    	所以单独定义一个parseUrl方法，在解析请求行时得到url后调用这个方法进一步解析。 	
+      	
+     4:新建一个包：servlet
+     	再该包中定义用于处理用户注册的业务类：RegServlet
+     	并实现service方法，用来处理注册业务
