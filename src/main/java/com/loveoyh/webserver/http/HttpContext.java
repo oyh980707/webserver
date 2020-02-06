@@ -1,6 +1,13 @@
 package com.loveoyh.webserver.http;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,15 +30,29 @@ public class HttpContext {
     }
 
     /**
-     * 初始化介质类型映射
+     * 1：在项目中导入dom4j的jar包
+     * 2：这里通过dom解析项目目录中config/web.xml
+     * 3：将web.xml中根目录标签中所有名为：mime-mapping的子标签获取回来
+     *  注意：跟标签下不是只有mime-mapping名字的字标签
+     * 4：遍历所有的mime-mapping标签，将该标签中的子标签<extension>中间的文本作为key
+     * 	子标签：<mime-type>中间的文本作为value保存到MIME_MAPPING这个map中完成初始化
+     *
      */
     private static void initMimeMapping() {
-        MIME_MAPING.put("html", "text/html");
-        MIME_MAPING.put("png", "image/png");
-        MIME_MAPING.put("gif", "image/gif");
-        MIME_MAPING.put("jpg", "image/jpeg");
-        MIME_MAPING.put("css", "text/css");
-        MIME_MAPING.put("js", "application/javascript");
+        try {
+            SAXReader reader = new SAXReader();
+            Document doc = reader.read(new File("config/web.xml"));
+            Element root = doc.getRootElement();
+            List<Element> mimeList = root.elements("mime-mapping");
+            for(Element mime : mimeList){
+                String key = mime.elementText("extension");
+                String value = mime.elementText("mime-type");
+                MIME_MAPING.put(key,value);
+            }
+            System.out.println(MIME_MAPING.size());
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -71,5 +92,9 @@ public class HttpContext {
      */
     public static String getMimeType(String ext){
         return MIME_MAPING.get(ext);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(HttpContext.getMimeType("txt"));
     }
 }
