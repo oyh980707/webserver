@@ -84,3 +84,8 @@
     注：由于不同文件有对应的介质类型定义，w3c有对其规定。也可直接参考tomcat安装目录下conf目录中的web.xml，其中包含大量的
     	<mime-mapping>标签，每个标签定义了一种介质类型
     	我们要在HttpContext中将这些介质类型包含进来，以便于在响应时可以根据对应的资源正确响应其类型
+    	
+8.  将HttpContext中初始化介质类型的方法：initMimeMapping方法修改
+    
+    为通过解析config/web.xml文件中所有的<mime-mapping>标签来初始化
+    这样我们可以支持所有介质类型
