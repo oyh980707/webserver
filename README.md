@@ -164,5 +164,9 @@
     服务端将对应的%xx这样的内容还原为字符串可以直接使用Java提供的API:URLDecoder即可
     	
     修改HttpRequest,在进一步解析URL时，将参数部分使用URLDecoder转换一下，
-    将所有%xx的内容还原为对应文字，这样我们就可以支持浏览器传中文了	
+    将所有%xx的内容还原为对应文字，这样我们就可以支持浏览器传中文了
+
+12. 在servlet中抽象一个HttpServlet，作为所有Servlet的超类
+    一是可以规定，要求所有Servlet必须包含有service方法用于处理业务
+    二是可以将这些Servlet跳转页面的代码公用，后期可以将其他公用代码定义到超类中	
 
