@@ -114,3 +114,19 @@
      4:新建一个包：servlet
      	再该包中定义用于处理用户注册的业务类：RegServlet
      	并实现service方法，用来处理注册业务
+     	
+10. 完成处理用户登录的业务操作
+    
+    1：准备登录页面，在web/myweb下创建login.html页面中form表单action指定路径为action="login"
+    	from表单中应当包含两个输入框，一个输入用户名，一个输入密码
+    	
+    2：在ClientHander添加一个分支，判断请求路径是否为请求登录业务，
+    	如果是，则实例化LoginServlet，并调用service方法处理登录
+    	
+    3：在servlet包中定义LoginServlet并定义service方法。
+    
+    4：service方法中完成登录业务
+    	4.1：通过request获取表单中提交的用户名及密码
+    	4.2：使用RandomAccessFile读取user.dat文件，比较每条记录中是否有与提交的用户名，密码匹配的记录
+    	4.3：若找到匹配记录，则跳转登陆成功页面：login_success.html
+    	4.4；若没有找到匹配记录则跳转失败页面：login_fail.html
