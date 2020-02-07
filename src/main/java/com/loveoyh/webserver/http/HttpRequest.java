@@ -117,24 +117,8 @@ public class HttpRequest {
             System.out.println("URI:"+requestURI);
             if(data.length>1){
                 this.queryString = data[1];
-                try {
-                    System.out.println("解析前:"+queryString);
-                    queryString = URLDecoder.decode(queryString, "UTF-8");
-                    System.out.println("解析后:"+queryString);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
                 //进一步按照"&"拆分参数
-                String[] paras = queryString.split("&");
-                for(String para : paras){
-                    //进一步按照"="拆分参数
-                    String[] arr = para.split("=");
-                    if(arr.length>1){
-                        parameters.put(arr[0],arr[1]);
-                    }else{
-                        parameters.put(arr[0],null);
-                    }
-                }
+                parseParameters(queryString);
             }
         }else{
             requestURI = url;
@@ -176,8 +160,58 @@ public class HttpRequest {
      */
     private void parseContent(){
         System.out.println("开始解析消息正文...");
+        /*
+         * 判别当前请求是否含有消息正文可以分析消息头
+         * 中是否含有Content-Length,Content-Type
+         */
+        if(headers.containsKey("Content-Length")){
+            //存在消息正文,根据头获取正文长度
+            int len = Integer.parseInt(headers.get("Content-Length"));
+            try {
+                byte[] data = new byte[len];
+                in.read(data);//读取指定的字节量
+                /*
+                 * 具体读到的消息正文字节表示的是什么
+                 * 要通过分析消息头Content-Type决定
+                 */
+                String type = headers.get("Content-Type");
+                //判断是否为form表单提交的用户数据
+                if("application/x-www-form-urlencoded".equals(type)){
+                    String line = new String(data,"ISO8859-1");
+                    System.out.println("内容："+line);
+                    parseParameters(line);
+                }
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         System.out.println("解析消息正文结束!");
+    }
+
+    /**
+     * 解析参数
+     * 参数的格式应当为：name=value&name=value....
+     * @param line
+     */
+    private void parseParameters(String line){
+        try {
+            System.out.println("解析前:"+line);
+            queryString = URLDecoder.decode(line, "UTF-8");
+            System.out.println("解析后:"+queryString);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String[] paras = queryString.split("&");
+        for(String para : paras){
+            //进一步按照"="拆分参数
+            String[] arr = para.split("=");
+            if(arr.length>1){
+                parameters.put(arr[0],arr[1]);
+            }else{
+                parameters.put(arr[0],null);
+            }
+        }
     }
 
     /**
