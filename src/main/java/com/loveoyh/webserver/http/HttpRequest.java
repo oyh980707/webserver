@@ -4,7 +4,9 @@ import com.loveoyh.webserver.http.ex.EmptyRequestException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +44,7 @@ public class HttpRequest {
     public HttpRequest(Socket socket) throws EmptyRequestException{
         try {
             this.socket = socket;
-            this.in = socket.getInputStream();
+            in = socket.getInputStream();
             /*
              * 1.解析请求行
              * 2.解析消息头
@@ -81,13 +83,13 @@ public class HttpRequest {
         if(data.length < 3){
             throw new EmptyRequestException("空请求!!!");
         }
-        this.method = data[0];
-        this.url = data[1];
+        method = data[0];
+        url = data[1];
         //进一步解析url
         parseUrl();
-        this.protocol = data[2];
+        protocol = data[2];
         //输出测试
-        System.out.println(this.method+" "+this.url+" "+this.protocol);
+        System.out.println(method+" "+url+" "+protocol);
 
         System.out.println("解析请求行结束!");
     }
@@ -109,12 +111,19 @@ public class HttpRequest {
      * “=”拆分成两部分，并且分别作为key，value保存到parameters这个map保存
      */
     private void parseUrl(){
-        if(this.url.indexOf("?") != -1){
-            String[] data = this.url.split("\\?");
-            this.requestURI = data[0];
-            System.out.println("URI:"+this.requestURI);
+        if(url.indexOf("?") != -1){
+            String[] data = url.split("\\?");
+            requestURI = data[0];
+            System.out.println("URI:"+requestURI);
             if(data.length>1){
-                queryString = data[1];
+                this.queryString = data[1];
+                try {
+                    System.out.println("解析前:"+queryString);
+                    queryString = URLDecoder.decode(queryString, "UTF-8");
+                    System.out.println("解析后:"+queryString);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 //进一步按照"&"拆分参数
                 String[] paras = queryString.split("&");
                 for(String para : paras){
@@ -128,7 +137,7 @@ public class HttpRequest {
                 }
             }
         }else{
-            this.requestURI = this.url;
+            requestURI = url;
         }
     }
 
