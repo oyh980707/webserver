@@ -9,7 +9,7 @@ import java.io.RandomAccessFile;
 /**
  * 登录功能
  */
-public class LoginServlet {
+public class LoginServlet extends HttpServlet{
     public void service(HttpRequest request, HttpResponse response){
         //
         String username = request.getParameters("username");
@@ -34,12 +34,10 @@ public class LoginServlet {
                     String pwd = new String(data,"UTF-8").trim();
                     if(pwd.equals(password)){
                         //密码一致登陆成功
-                        File file = new File("web/myweb/login_success.html");
-                        response.setEntity(file);
+                        forward("/myweb/login_success.html",request,response);
                     }else{
                         //密码不一致
-                        File file = new File("web/myweb/login_fail.html");
-                        response.setEntity(file);
+                        forward("/myweb/login_fail.html",request,response);
                     }
                     have = true;
                     //停止循环，无需再往下面读取数据
@@ -48,8 +46,7 @@ public class LoginServlet {
             }
             if(!have){
                 //用户名输入无效
-                File file = new File("web/myweb/login_fail.html");
-                response.setEntity(file);
+                forward("/myweb/login_fail.html",request,response);
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -11,7 +11,7 @@ import java.util.Arrays;
 /**
  * 注册业务
  */
-public class RegServlet {
+public class RegServlet extends HttpServlet{
     public void service(HttpRequest request, HttpResponse response){
         /*
          * 注册流程
@@ -55,8 +55,7 @@ public class RegServlet {
             //写年龄
             raf.writeInt(age);
 
-            File file = new File("web/myweb/reg_success.html");
-            response.setEntity(file);
+            forward("/myweb/reg_success.html",request,response);
         }catch (Exception e){
             e.printStackTrace();
         }
