@@ -3,6 +3,7 @@ package com.loveoyh.webserver.core;
 import com.loveoyh.webserver.http.HttpRequest;
 import com.loveoyh.webserver.http.HttpResponse;
 import com.loveoyh.webserver.http.ex.EmptyRequestException;
+import com.loveoyh.webserver.servlet.HttpServlet;
 import com.loveoyh.webserver.servlet.LoginServlet;
 import com.loveoyh.webserver.servlet.RegServlet;
 
@@ -36,14 +37,14 @@ public class ClientHandler implements Runnable{
             HttpResponse response = new HttpResponse(socket);
 
             String url = request.getRequestURI();
+            String servletName = ServerContext.getServletName(url);
 
-            if("/myweb/reg".equals(url)){
-                RegServlet reg = new RegServlet();
-                reg.service(request,response);
-            }else if("/myweb/login".equals(url)){
-                LoginServlet login = new LoginServlet();
-                login.service(request,response);
-            } else{
+            if(servletName != null){
+                Class cls = Class.forName(servletName);
+                System.out.println("正在加载："+servletName);
+                HttpServlet servlet = (HttpServlet)cls.newInstance();
+                servlet.service(request, response);
+            }else{
                 //对应从web目录中找到该资源
                 File file = new File("web"+url);
                 if(file.exists()){
