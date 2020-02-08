@@ -192,3 +192,27 @@
     2：将原来parseUrl方法中解析queryString参数部分的代码单独提成一个方法：parseParameters，并在parseUrl方法中
     	对应的地方改为调用这个方法解析参数部分
     	这样一来该方法可以被重用与解析消息正文中读取出来的form表单对应的字符串
+
+14. 由于在ClientHandler的流程控制中以编码的形势判断不同的url
+    来调用对应的Servlet，这样做有一个很大的弊端，如果新创建一个业务
+    总是要在ClientHandler中修改分支，添加新的url判断以及实例化对应的Servlet
+    
+    解决：
+    利用反射机制，让ClientHandler根据url得到对应的Servlet的名字然后实例化
+    并调用service方法。由于利用反射可以根据字符串的形式加载一个类并实例化，这样我们就可以将url与
+    对应servlet的关系以配置文件的形式进行配置，那么将来在添加新的业务时，只需要在配置文件之配置一个新的url
+    与对应的servlet即可，而ClientHandler无需再做任何改动
+    
+    1：在core包中新建一个类：ServerContext
+    	该类用于保存有关服务端配置信息
+    
+    2：在ServerContext中添加一个静态属性：
+    	Map<String,String> SERVLET_MAPPING
+    	
+    3:定义一个私有的静态方法：initServletMapping,用于初始化请求与对应的Servlet名字的映射关系
+    
+    4：提供一个私有的静态方法：getServletName(String url),可以根据请求获取对应的Servlet名字，
+    
+    5：在ClientHandler中只需要一个分支，即：先使用url判断是否是对应一个Servlet，若是，则根据对应的Servlet名字
+    	加载它并实例化，然后调用其service方法处理该业务。
+
